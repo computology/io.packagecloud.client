@@ -116,12 +116,11 @@
     </plugins>
   </build>
 
-
   <distributionManagement>
-    <repository>
-      <id>nfs</id>
-      <url>scpexe://packagecloud_pcloud-mvn@ssh.phx.nearlyfreespeech.net/home/public/</url>
-    </repository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <dependencies>
