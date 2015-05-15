@@ -10,6 +10,7 @@ public interface Client {
      *
      * @param fileStream the file stream
      * @param filename the filename
+     * @param username the username
      * @param repository the repository
      * @param distroVersionId the distro version id
      * @param sourceFiles the source files
@@ -19,6 +20,7 @@ public interface Client {
     public io.packagecloud.client.interfaces.Result putPackage(
             InputStream fileStream,
             String filename,
+            String username,
             String repository,
             Integer distroVersionId,
             Map<String, InputStream> sourceFiles) throws Exception;

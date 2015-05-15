@@ -62,6 +62,28 @@ public class PackageCloud {
     }
 
     /**
+     * Put package to a shared repository.
+     *
+     * @param pkg the Package to upload
+     * @param username the username of owner of the shared repository
+     * @return the boolean
+     * @throws io.packagecloud.client.UnauthorizedException
+     * @throws java.io.IOException
+     * @throws io.packagecloud.client.ServerErrorException
+     */
+    public boolean putPackage(Package pkg, String username) throws UnauthorizedException, IOException, ServerErrorException {
+        client.putPackage(
+                pkg.getFilestream(),
+                pkg.getFilename(),
+                username,
+                pkg.getRepository(),
+                pkg.getDistroVersionId(),
+                pkg.getSourceFiles());
+
+        return true;
+    }
+
+    /**
      * Package contents.
      *
      * @param pkg the pkg
