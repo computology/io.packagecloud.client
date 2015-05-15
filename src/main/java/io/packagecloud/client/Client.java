@@ -133,10 +133,21 @@ public class Client implements io.packagecloud.client.interfaces.Client {
     }
 
 
+    public Result putPackage(
+            InputStream fileStream,
+            String filename,
+            String repository,
+            Integer distroVersionId,
+            Map<String, InputStream> sourceFiles)
+            throws UnauthorizedException, IOException, ServerErrorException {
+        return putPackage(fileStream, filename, getUsername(), repository, distroVersionId, sourceFiles);
+    }
+
     @Override
     public Result putPackage(
             InputStream fileStream,
             String filename,
+            String username,
             String repository,
             Integer distroVersionId,
             Map<String, InputStream> sourceFiles)
@@ -144,7 +155,7 @@ public class Client implements io.packagecloud.client.interfaces.Client {
         String strResponse;
         StatusLine statusLine;
 
-        String url = String.format("/api/v1/repos/%s/%s/packages.json", getUsername(), repository);
+        String url = String.format("/api/v1/repos/%s/%s/packages.json", username, repository);
 
         HttpPost httppost = new HttpPost(url);
 

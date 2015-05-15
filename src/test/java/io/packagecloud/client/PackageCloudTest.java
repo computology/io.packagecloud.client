@@ -89,6 +89,32 @@ public class PackageCloudTest {
     }
 
     @Test
+    public void testPutPackageToCollabRepo() throws Exception {
+
+        InputStream fileStream = getClass().getResourceAsStream("/libampsharp2.0-cil_2.0.4-1_all.deb");
+        byte[] bytes = IOUtils.toByteArray(fileStream);
+
+        Package pkg = new Package(bytes, "mystuff", 16);
+
+        pcloud.putPackage(pkg, "julio");
+
+        TestHttpContext ctx = TestHttpContext.getInstance();
+
+        // Check distro ID
+        String distroVersionId = ctx.getRequest().getPart("package[distro_version_id]").getContent();
+        assertEquals(distroVersionId, "16");
+
+        // Check uploadedBytes vs our bytes
+        Part filePart = ctx.getRequest().getPart("package[package_file]");
+        byte[] uploadedBytes = IOUtils.toByteArray(filePart.getInputStream());
+        assertArrayEquals(bytes, uploadedBytes);
+
+        assertEquals(ctx.getRequest().getPath().toString(), "/api/v1/repos/julio/mystuff/packages.json");
+        assertNotNull(filePart.getFileName());
+        assertEquals("application/octet-stream", filePart.getContentType().toString());
+    }
+
+    @Test
     public void testPutGemPackage() throws Exception {
 
         InputStream fileStream = getClass().getResourceAsStream("/chewbacca-1.0.0.gem");
