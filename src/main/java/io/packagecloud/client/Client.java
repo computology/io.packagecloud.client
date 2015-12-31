@@ -35,7 +35,15 @@ public class Client implements io.packagecloud.client.interfaces.Client {
     private static Logger logger = LoggerProvider.getLogger();
 
     private final HttpHost targetHost;
-    private final CloseableHttpClient httpClient = HttpClients.createDefault();
+    private final CloseableHttpClient httpClient = getConfiguredHttpClient();
+
+    private CloseableHttpClient getConfiguredHttpClient() {
+        return HttpClients
+                .custom()
+                .setUserAgent("io.packagecloud.client 1.0.9")
+                .build();
+    }
+
     private final HttpClientContext context = HttpClientContext.create();
     private final SecureRandom random = new SecureRandom();
     private final Credentials credentials;
