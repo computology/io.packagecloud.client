@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  */
 public class Package {
     private static Logger logger = LoggerProvider.getLogger();
-    private static String[] supportedExtensions = {"deb", "dsc", "gem", "rpm"};
+    private static String[] supportedExtensions = {"deb", "dsc", "gem", "rpm", "whl", "zip", "egg", "egg-info", "tar", "bz2", "Z", "gz"};
 
     private final SecureRandom random = new SecureRandom();
     private final InputStream filestream;

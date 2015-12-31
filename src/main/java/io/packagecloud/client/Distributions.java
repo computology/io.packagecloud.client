@@ -9,4 +9,5 @@ public class Distributions {
     public List<Distribution> deb;
     public List<Distribution> dsc;
     public List<Distribution> rpm;
+    public List<Distribution> py;
 }
