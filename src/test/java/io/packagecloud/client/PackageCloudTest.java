@@ -68,7 +68,7 @@ public class PackageCloudTest {
         InputStream fileStream = getClass().getResourceAsStream("/libampsharp2.0-cil_2.0.4-1_all.deb");
         byte[] bytes = IOUtils.toByteArray(fileStream);
 
-        Package pkg = new Package(bytes, "mystuff", 16);
+        Package pkg = new Package("libampsharp2.0-cil_2.0.4-1_all.deb", bytes, "mystuff", 16);
 
         pcloud.putPackage(pkg);
 
@@ -94,8 +94,7 @@ public class PackageCloudTest {
         InputStream fileStream = getClass().getResourceAsStream("/libampsharp2.0-cil_2.0.4-1_all.deb");
         byte[] bytes = IOUtils.toByteArray(fileStream);
 
-        Package pkg = new Package(bytes, "mystuff", 16);
-
+        Package pkg = new Package("libampsharp2.0-cil_2.0.4-1_all.deb", bytes, "mystuff", 16);
         pcloud.putPackage(pkg, "julio");
 
         TestHttpContext ctx = TestHttpContext.getInstance();
@@ -118,7 +117,7 @@ public class PackageCloudTest {
     public void testPutGemPackage() throws Exception {
 
         InputStream fileStream = getClass().getResourceAsStream("/chewbacca-1.0.0.gem");
-        Package pkg = new Package(fileStream, "mystuff");
+        Package pkg = new Package("chewbacca-1.0.0.gem", fileStream, "mystuff");
 
         pcloud.putPackage(pkg);
 
@@ -140,7 +139,7 @@ public class PackageCloudTest {
         sourceFiles.put("jake_1.0.orig.tar.bz2", sourceFile0);
         sourceFiles.put("jake_1.0-7.debian.tar.gz", sourceFile1);
 
-        Package pkg = new Package(fileStream, "mystuff", 16, sourceFiles);
+        Package pkg = new Package("jake_1.0-7.dsc", fileStream, "mystuff", 16, sourceFiles);
 
         pcloud.putPackage(pkg);
 
@@ -193,7 +192,7 @@ public class PackageCloudTest {
     public void testPackageContents() throws Exception {
 
         InputStream fileStream = getClass().getResourceAsStream("/natty_dsc/jake_1.0-7.dsc");
-        Package pkg = new Package(fileStream, "mystuff");
+        Package pkg = new Package("jake_1.0-7.dsc", fileStream, "mystuff");
 
         Contents contents = pcloud.packageContents(pkg);
 

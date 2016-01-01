@@ -1,11 +1,9 @@
 package io.packagecloud.client;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.SecureRandom;
+import java.io.*;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.io.File;
 
 /**
  * The type Package.
@@ -14,7 +12,6 @@ public class Package {
     private static Logger logger = LoggerProvider.getLogger();
     private static String[] supportedExtensions = {"deb", "dsc", "gem", "rpm", "whl", "zip", "egg", "egg-info", "tar", "bz2", "Z", "gz"};
 
-    private final SecureRandom random = new SecureRandom();
     private final InputStream filestream;
     private final String repository;
     private final Integer distroVersionId;
@@ -22,89 +19,106 @@ public class Package {
     private String filename;
     private Map<String, InputStream> sourceFiles;
 
-    /**
-     * Instantiates a new Package.
-     *
-     * @param filestream the filestream
-     * @param repository the repository
-     */
-    public Package(
-            InputStream filestream,
-            String repository) {
-        this(filestream, repository, null, null);
-    }
+
 
     /**
      * Instantiates a new Package.
      *
      * @param filestream the filestream
      * @param repository the repository
+     */
+    public Package(
+            String filename,
+            InputStream filestream,
+            String repository) {
+        this(filename, filestream, repository, null, null);
+    }
+
+    /**
+     * Instantiates a new Package.
+     *
+     * @param filename the filename
+     * @param filestream the filestream
+     * @param repository the repository
      * @param distroVersionId the distro version id
      */
     public Package(
+            String filename,
             InputStream filestream,
             String repository,
             Integer distroVersionId) {
-        this(filestream, repository, distroVersionId, null);
+        this(filename, filestream, repository, distroVersionId, null);
     }
 
     /**
      * Instantiates a new Package.
      *
+     * @param filename the filename
      * @param bytes the bytes
      * @param repository the repository
      * @param distroVersionId the distro version id
      */
     public Package(
+            String filename,
             byte[] bytes,
             String repository,
             Integer distroVersionId) {
-        this(new ByteArrayInputStream(bytes), repository, distroVersionId, null);
+        this(filename, new ByteArrayInputStream(bytes), repository, distroVersionId, null);
     }
 
     /**
      * Instantiates a new Package.
      *
+     * @param filename the filename
      * @param bytes the bytes
      * @param repository the repository
      */
     public Package(
+            String filename,
             byte[] bytes,
             String repository) {
-        this(new ByteArrayInputStream(bytes), repository, null, null);
+        this(filename, new ByteArrayInputStream(bytes), repository, null, null);
     }
 
     /**
      * Instantiates a new Package.
      *
+     * @param filename the filename
      * @param bytes the bytes
      * @param repository the repository
      * @param distroVersionId the distro version id
      * @param sourceFiles the source files
      */
     public Package(
+            String filename,
             byte[] bytes,
             String repository,
             Integer distroVersionId,
             Map<String, InputStream> sourceFiles) {
-        this(new ByteArrayInputStream(bytes), repository, distroVersionId, sourceFiles);
+        this(filename, new ByteArrayInputStream(bytes), repository, distroVersionId, sourceFiles);
     }
 
     /**
      * Instantiates a new Package.
      *
+     * @param filename the filename
      * @param filestream the filestream
      * @param repository the repository
      * @param distroVersionId the distro version id
      * @param sourceFiles the source files
      */
     public Package(
+            String filename,
             InputStream filestream,
             String repository,
             Integer distroVersionId,
             Map<String, InputStream> sourceFiles) {
 
-        logger.fine(String.format("new Package(%s, %s, %s, %s", filestream, repository, distroVersionId, sourceFiles));
+        logger.fine(String.format("new Package(%s, %s, %s, %s", filename, repository, distroVersionId, sourceFiles));
+
+        if (filename == null) {
+            throw new IllegalArgumentException("filename missing");
+        }
 
         if (filestream == null) {
             throw new IllegalArgumentException("filestream missing");
@@ -115,11 +129,47 @@ public class Package {
         }
 
         this.filestream = filestream;
-        this.filename = generateFilename();
+        this.filename = filename;
         this.repository = repository;
         this.distroVersionId = distroVersionId;
         this.sourceFiles = sourceFiles;
 
+    }
+
+    /**
+     * Get Package from a java.io.File
+     * @param file the file object
+     * @param repository the repository
+     *
+     * @return the Package
+     */
+    public static Package fromFile(
+            File file,
+            String repository) throws FileNotFoundException {
+        FileInputStream filestream = new FileInputStream(file);
+        if (file.isDirectory() || !file.canRead()){
+            throw new IllegalArgumentException(String.format("could not open or read: %s", file.getName()));
+        }
+        return new Package(file.getName(), filestream, repository);
+    }
+
+    /**
+     * Get Package from a java.io.File
+     * @param file the file object
+     * @param repository the repository
+     * @param distroVersionId the distro version id
+     *
+     * @return the Package
+     */
+    public static Package fromFile(
+            File file,
+            String repository,
+            Integer distroVersionId) throws FileNotFoundException {
+        FileInputStream filestream = new FileInputStream(file);
+        if (file.isDirectory() || !file.canRead()){
+            throw new IllegalArgumentException(String.format("could not open or read: %s", file.getName()));
+        }
+        return new Package(file.getName(), filestream, repository, distroVersionId);
     }
 
     /**
@@ -194,12 +244,4 @@ public class Package {
         this.sourceFiles = sourceFiles;
     }
 
-    /**
-     * Generate filename.
-     *
-     * @return the string
-     */
-    public String generateFilename() {
-        return new BigInteger(130, random).toString(32);
-    }
 }
