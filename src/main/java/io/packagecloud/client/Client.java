@@ -30,17 +30,24 @@ import java.security.SecureRandom;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import io.packagecloud.client.interfaces.ProgressListener;
+
 public class Client implements io.packagecloud.client.interfaces.Client {
 
     private static Logger logger = LoggerProvider.getLogger();
 
     private final HttpHost targetHost;
     private final CloseableHttpClient httpClient = getConfiguredHttpClient();
+    private ProgressListener progressListener;
+
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
 
     private CloseableHttpClient getConfiguredHttpClient() {
         return HttpClients
                 .custom()
-                .setUserAgent("io.packagecloud.client 2.0.0")
+                .setUserAgent("io.packagecloud.client 2.0.1")
                 .build();
     }
 
@@ -70,6 +77,7 @@ public class Client implements io.packagecloud.client.interfaces.Client {
         context.setCredentialsProvider(credsProvider);
         context.setAuthCache(authCache);
     }
+
 
     public HttpHost getTargetHost() {
         return targetHost;
@@ -186,7 +194,12 @@ public class Client implements io.packagecloud.client.interfaces.Client {
             }
         }
 
-        httppost.setEntity(reqEntity.build());
+        if (this.progressListener != null) {
+            httppost.setEntity(new ProgressMonitor(reqEntity.build(), this.progressListener, filename));
+        } else {
+            httppost.setEntity(reqEntity.build());
+
+        }
 
         CloseableHttpResponse response = httpClient.execute(
                 targetHost, httppost, context);
@@ -218,6 +231,7 @@ public class Client implements io.packagecloud.client.interfaces.Client {
     }
 
 
+    //TODO: we can probably replace this with InputStreamBody
     private ByteArrayBody bodyFromInputStream(InputStream is, String filename) throws IOException {
         byte[] bytes = IOUtils.toByteArray(is);
         return new ByteArrayBody(bytes, filename);
