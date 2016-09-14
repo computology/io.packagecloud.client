@@ -10,4 +10,5 @@ public class Distributions {
     public List<Distribution> dsc;
     public List<Distribution> rpm;
     public List<Distribution> py;
+    public List<Distribution> jar;
 }
