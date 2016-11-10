@@ -13,6 +13,10 @@ public class PackageCloud {
     private final Client client;
     private final ObjectMapper mapper;
 
+    public Client getClient() {
+        return client;
+    }
+
     /**
      * Instantiates a new PackageCloud object
      *
