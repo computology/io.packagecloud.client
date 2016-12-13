@@ -3,7 +3,7 @@
 
   <groupId>io.packagecloud</groupId>
   <artifactId>client</artifactId>
-  <version>3.0.0</version>
+  <version>3.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>${project.groupId}:${project.artifactId}</name>
