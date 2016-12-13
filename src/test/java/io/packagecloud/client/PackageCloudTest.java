@@ -191,13 +191,27 @@ public class PackageCloudTest {
     }
 
 
-    @Test
-    public void testPackageContents() throws Exception {
+    @Test(expected=IllegalArgumentException.class)
+    public void testPackageContentsWithNoDist() throws Exception {
 
         InputStream fileStream = getClass().getResourceAsStream("/natty_dsc/jake_1.0-7.dsc");
         Package pkg = new Package("jake_1.0-7.dsc", fileStream, "mystuff");
 
+        pcloud.packageContents(pkg);
+    }
+
+    @Test
+    public void testPackageContents() throws Exception {
+
+        InputStream fileStream = getClass().getResourceAsStream("/natty_dsc/jake_1.0-7.dsc");
+        Package pkg = new Package("jake_1.0-7.dsc", fileStream, "mystuff", 16);
+
         Contents contents = pcloud.packageContents(pkg);
+
+        TestHttpContext ctx = TestHttpContext.getInstance();
+
+        String distroVersionId = ctx.getRequest().getPart("package[distro_version_id]").getContent();
+        assertEquals(distroVersionId, "16");
 
         assertEquals(contents.files.size(), 2);
         assertEquals(contents.files.get(0).filename, "jake_1.0.orig.tar.bz2");

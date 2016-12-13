@@ -97,7 +97,10 @@ public class PackageCloud {
      * @throws io.packagecloud.client.ServerErrorException
      */
     public Contents packageContents(Package pkg) throws Exception {
-        Result result = client.packageContents(pkg.getFilestream(), pkg.getFilename(), pkg.getRepository());
+        if (pkg.getDistroVersionId() == null){
+            throw new IllegalArgumentException("distro_version_id is required for packageContents");
+        }
+        Result result = client.packageContents(pkg.getFilestream(), pkg.getFilename(), pkg.getRepository(), pkg.getDistroVersionId());
         return mapper.readValue(result.getResponse(), Contents.class);
     }
 

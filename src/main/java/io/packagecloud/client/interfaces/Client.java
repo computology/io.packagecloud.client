@@ -44,7 +44,8 @@ public interface Client {
      */
     public io.packagecloud.client.interfaces.Result packageContents(InputStream fileStream,
                                   String filename,
-                                  String repository) throws Exception;
+                                  String repository,
+                                  Integer distroVersionId) throws Exception;
 
 
 }

@@ -15,6 +15,7 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.InputStreamBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
@@ -117,7 +118,7 @@ public class Client implements io.packagecloud.client.interfaces.Client {
     }
 
     @Override
-    public Result packageContents(InputStream fileStream, String filename, String repository)
+    public Result packageContents(InputStream fileStream, String filename, String repository, Integer distroVersionId)
             throws UnauthorizedException, IOException, ServerErrorException {
         String strResponse;
         StatusLine statusLine;
@@ -128,8 +129,11 @@ public class Client implements io.packagecloud.client.interfaces.Client {
 
         ByteArrayBody body = bodyFromInputStream(fileStream, filename);
 
+        StringBody distro = new StringBody(String.valueOf(distroVersionId), ContentType.TEXT_PLAIN);
+
         HttpEntity reqEntity = MultipartEntityBuilder.create()
                 .addPart("package[package_file]", body)
+                .addPart("package[distro_version_id]", distro)
                 .build();
 
         httppost.setEntity(reqEntity);
