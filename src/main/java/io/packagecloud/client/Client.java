@@ -47,7 +47,7 @@ public class Client implements io.packagecloud.client.interfaces.Client {
     private CloseableHttpClient getConfiguredHttpClient() {
         return HttpClients
                 .custom()
-                .setUserAgent("io.packagecloud.client 2.0.3")
+                .setUserAgent("io.packagecloud.client 3.0.0")
                 .build();
     }
 
@@ -117,7 +117,7 @@ public class Client implements io.packagecloud.client.interfaces.Client {
     }
 
     @Override
-    public Result packageContents(InputStream fileStream, String filename, String repository)
+    public Result packageContents(InputStream fileStream, String filename, String repository, Integer distroVersionId)
             throws UnauthorizedException, IOException, ServerErrorException {
         String strResponse;
         StatusLine statusLine;
@@ -128,8 +128,11 @@ public class Client implements io.packagecloud.client.interfaces.Client {
 
         ByteArrayBody body = bodyFromInputStream(fileStream, filename);
 
+        StringBody distro = new StringBody(String.valueOf(distroVersionId), ContentType.TEXT_PLAIN);
+
         HttpEntity reqEntity = MultipartEntityBuilder.create()
                 .addPart("package[package_file]", body)
+                .addPart("package[distro_version_id]", distro)
                 .build();
 
         httppost.setEntity(reqEntity);
