@@ -47,7 +47,7 @@ public class Client implements io.packagecloud.client.interfaces.Client {
     private CloseableHttpClient getConfiguredHttpClient() {
         return HttpClients
                 .custom()
-                .setUserAgent("io.packagecloud.client 2.0.3")
+                .setUserAgent("io.packagecloud.client 3.0.0")
                 .build();
     }
 
