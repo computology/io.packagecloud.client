@@ -10,7 +10,7 @@ import java.io.File;
  */
 public class Package {
     private static Logger logger = LoggerProvider.getLogger();
-    private static String[] supportedExtensions = {"deb", "dsc", "gem", "rpm", "whl", "zip", "egg", "egg-info", "tar", "bz2", "Z", "gz"};
+    private static String[] supportedExtensions = {"deb", "dsc", "gem", "rpm", "whl", "zip", "egg", "egg-info", "tar", "bz2", "Z", "gz", "jar"};
 
     private final InputStream filestream;
     private final String repository;
